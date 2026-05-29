@@ -35,6 +35,7 @@ fallback in the report.
 
 ```bash
 ./scripts/probe_jetson.sh jetson-orin
+./scripts/run_ollama_hf_remote.sh jetson-orin hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF:Q4_K_M
 ./scripts/run_ollama_gguf_remote.sh jetson-orin ~/models/lfm25/LFM2.5-8B-A1B-Q4_K_M.gguf lfm25:8b-a1b-q4
 ```
 
@@ -47,4 +48,3 @@ Do not commit:
 - full home-directory listings
 - tokens, API keys, or browser/session material
 - large raw benchmark dumps
-
