@@ -49,8 +49,10 @@ free -h
 
 echo
 echo "== prompt =="
-/usr/bin/time -f "elapsed=%E maxrss_kb=%M" \
-  ollama run "$MODEL_REF" "日本語で短く答えてください。Jetson Orin Nano Super 8GBでLFM2.5 8B A1B Q4_K_Mを動かす時、RAM不足を避けるために最初に下げるべき設定は何ですか？"
+start_epoch="$(date +%s)"
+ollama run "$MODEL_REF" "日本語で短く答えてください。Jetson Orin Nano Super 8GBでLFM2.5 8B A1B Q4_K_Mを動かす時、RAM不足を避けるために最初に下げるべき設定は何ですか？"
+end_epoch="$(date +%s)"
+echo "elapsed_seconds=$((end_epoch - start_epoch))"
 
 echo
 echo "== post-run =="
@@ -62,4 +64,3 @@ REMOTE
 } | tee "$out"
 
 echo "wrote $out"
-

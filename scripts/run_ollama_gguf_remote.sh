@@ -62,8 +62,10 @@ ollama create "$MODEL_NAME" -f "$workdir/Modelfile"
 
 echo
 echo "== short prompt =="
-/usr/bin/time -f "elapsed=%E maxrss_kb=%M" \
-  ollama run "$MODEL_NAME" "Answer in one short Japanese paragraph: Jetson Orin Nano Superで小型MoE GGUFを動かす時に見るべきメモリ指標は？"
+start_epoch="$(date +%s)"
+ollama run "$MODEL_NAME" "Answer in one short Japanese paragraph: Jetson Orin Nano Superで小型MoE GGUFを動かす時に見るべきメモリ指標は？"
+end_epoch="$(date +%s)"
+echo "elapsed_seconds=$((end_epoch - start_epoch))"
 
 echo
 echo "== post-run =="
@@ -75,4 +77,3 @@ REMOTE
 } | tee "$out"
 
 echo "wrote $out"
-
