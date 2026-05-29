@@ -1,4 +1,5 @@
 .DS_Store
+node_modules/
 *.gguf
 *.safetensors
 *.bin
@@ -10,4 +11,3 @@ tmp/
 work/
 *.log
 logs/raw/
-
