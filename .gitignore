@@ -1,0 +1,13 @@
+.DS_Store
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.pth
+models/
+downloads/
+tmp/
+work/
+*.log
+logs/raw/
+
