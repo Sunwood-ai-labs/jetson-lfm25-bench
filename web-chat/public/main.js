@@ -26,6 +26,25 @@ function addBubble(role, text = "") {
   return p;
 }
 
+function addAssistantBubble() {
+  const article = document.createElement("article");
+  article.className = "bubble assistant";
+  const label = document.createElement("span");
+  label.className = "label";
+  label.textContent = "remote model";
+  const think = document.createElement("details");
+  think.className = "think-box";
+  const summary = document.createElement("summary");
+  summary.textContent = "think stream";
+  const thinkText = document.createElement("pre");
+  think.append(summary, thinkText);
+  const p = document.createElement("p");
+  article.append(label, think, p);
+  transcript.append(article);
+  transcript.scrollTop = transcript.scrollHeight;
+  return { answer: p, think, thinkText };
+}
+
 async function refreshStatus() {
   try {
     const response = await fetch("/api/status");
@@ -42,7 +61,7 @@ async function refreshStatus() {
 
 async function sendPrompt(prompt) {
   addBubble("user", prompt);
-  const answer = addBubble("assistant", "");
+  const { answer, think, thinkText } = addAssistantBubble();
   setStatus("", "generating");
   runtimeState.textContent = "Streaming";
   sendButton.disabled = true;
@@ -57,6 +76,7 @@ async function sendPrompt(prompt) {
   const decoder = new TextDecoder();
   let buffer = "";
   let hiddenThink = false;
+  let thinkSeen = false;
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -69,12 +89,20 @@ async function sendPrompt(prompt) {
       const payload = JSON.parse(line.slice(6));
       if (payload.token) {
         let token = payload.token;
-        if (token.includes("<think>")) hiddenThink = true;
+        if (token.includes("<think>")) {
+          hiddenThink = true;
+          thinkSeen = true;
+          think.open = true;
+          token = token.replace("<think>", "");
+        }
         if (hiddenThink) {
           if (token.includes("</think>")) {
             hiddenThink = false;
-            token = token.split("</think>").slice(1).join("</think>");
+            const parts = token.split("</think>");
+            thinkText.textContent += parts.shift();
+            token = parts.join("</think>");
           } else {
+            thinkText.textContent += token;
             token = "";
           }
         }
@@ -89,6 +117,9 @@ async function sendPrompt(prompt) {
 
   if (!answer.textContent.trim()) {
     answer.textContent = "応答は取得できましたが、表示対象の本文が空でした。";
+  }
+  if (!thinkSeen) {
+    think.remove();
   }
   setStatus("ready", "ready");
   sendButton.disabled = false;
@@ -127,4 +158,25 @@ if (params.get("demo") === "long") {
     "最後に、このLAN動画ビューワーで見る価値を一文でまとめてください。"
   ].join("\\n");
   setTimeout(() => form.requestSubmit(), 700);
+}
+
+if (params.get("demo") === "multi") {
+  const prompts = [
+    "まず、ホットスタートだと最初の表示が速くなる理由を短く説明して。",
+    "次に、thinkを表示するデモとして、何が見えるようになったか説明して。",
+    "最後に、このJetson LFM2.5 Q4_K_M連続チャット実験の見どころを3点でまとめて。"
+  ];
+  let index = 0;
+  const runNext = async () => {
+    if (index >= prompts.length) return;
+    promptInput.value = prompts[index++];
+    form.requestSubmit();
+    const timer = setInterval(() => {
+      if (!sendButton.disabled) {
+        clearInterval(timer);
+        setTimeout(runNext, 900);
+      }
+    }, 500);
+  };
+  setTimeout(runNext, 700);
 }

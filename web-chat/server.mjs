@@ -12,6 +12,7 @@ const host = process.env.HOST || "0.0.0.0";
 const ollamaBase = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11435";
 const model =
   process.env.OLLAMA_MODEL || "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF:Q4_K_M";
+let lastPrewarm = null;
 
 const mime = {
   ".html": "text/html; charset=utf-8",
@@ -119,6 +120,37 @@ async function status(res) {
   }
 }
 
+async function prewarm(res) {
+  const startedAt = Date.now();
+  try {
+    const response = await fetch(`${ollamaBase}/api/chat`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        model,
+        stream: false,
+        keep_alive: "15m",
+        options: { num_ctx: 4096, temperature: 0 },
+        messages: [
+          { role: "system", content: "Reply with OK only." },
+          { role: "user", content: "OK" }
+        ]
+      })
+    });
+    const body = await response.json();
+    lastPrewarm = {
+      ok: response.ok,
+      elapsedMs: Date.now() - startedAt,
+      loadDurationNs: body.load_duration || null,
+      totalDurationNs: body.total_duration || null
+    };
+    sendJson(res, response.ok ? 200 : 502, { ok: response.ok, model, lastPrewarm });
+  } catch (error) {
+    lastPrewarm = { ok: false, elapsedMs: Date.now() - startedAt, error: error.message };
+    sendJson(res, 502, { ok: false, model, lastPrewarm });
+  }
+}
+
 async function serveFile(req, res, baseDir, rawPath) {
   const safePath = normalize(rawPath).replace(/^(\.\.[/\\])+/, "");
   const filePath = join(baseDir, safePath);
@@ -148,9 +180,16 @@ async function serveStatic(req, res) {
 
 createServer(async (req, res) => {
   if (req.method === "GET" && req.url?.startsWith("/api/status")) return status(res);
+  if (req.method === "POST" && req.url === "/api/prewarm") return prewarm(res);
   if (req.method === "POST" && req.url === "/api/chat") return proxyChat(req, res);
   return serveStatic(req, res);
 }).listen(port, host, () => {
   console.log(`Jetson LFM2.5 chat: http://${host}:${port}`);
   console.log(`Ollama upstream: ${ollamaBase}`);
+  if (process.env.PREWARM === "1") {
+    fetch(`http://127.0.0.1:${port}/api/prewarm`, { method: "POST" })
+      .then((r) => r.json())
+      .then((data) => console.log(`Prewarm: ${JSON.stringify(data.lastPrewarm)}`))
+      .catch((error) => console.error(`Prewarm failed: ${error.message}`));
+  }
 });

@@ -77,6 +77,7 @@
           <footer class="viewer-meta">
             <a href="/viewer.html">Short chat</a>
             <a href="/viewer.html?capture=long">Longform run</a>
+            <a href="/viewer.html?capture=multi">Hot multi-turn</a>
             <a id="videoLink" href="/captures/jetson-lfm25-chat-demo.mp4">Open MP4</a>
             <a id="webmLink" href="/captures/jetson-lfm25-chat-demo.webm">Open WebM</a>
             <a id="shotLink" href="/captures/jetson-lfm25-chat-demo.png">Open screenshot</a>
@@ -95,6 +96,17 @@
         video.poster = "/captures/jetson-lfm25-longform-demo.png";
         document.querySelector("#videoLink").href = source.src;
         document.querySelector("#webmLink").href = "/captures/jetson-lfm25-longform-demo.webm";
+        document.querySelector("#shotLink").href = video.poster;
+        video.load();
+      }
+      if (params.get("capture") === "multi") {
+        const video = document.querySelector("#video");
+        const source = document.querySelector("#source");
+        source.src = "/captures/jetson-lfm25-multiturn-hot-demo.mp4";
+        source.type = "video/mp4";
+        video.poster = "/captures/jetson-lfm25-multiturn-hot-demo.png";
+        document.querySelector("#videoLink").href = source.src;
+        document.querySelector("#webmLink").href = "/captures/jetson-lfm25-multiturn-hot-demo.webm";
         document.querySelector("#shotLink").href = video.poster;
         video.load();
       }

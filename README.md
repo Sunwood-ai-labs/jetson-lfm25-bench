@@ -86,6 +86,15 @@ The current captured proof is:
 - `captures/jetson-lfm25-longform-demo.webm`
 - `captures/jetson-lfm25-longform-demo.mp4`
 - `captures/jetson-lfm25-longform-demo.png`
+- `captures/jetson-lfm25-multiturn-hot-demo.webm`
+- `captures/jetson-lfm25-multiturn-hot-demo.mp4`
+- `captures/jetson-lfm25-multiturn-hot-demo.png`
+
+Hot-start multi-turn viewer:
+
+```text
+http://<mac-lan-ip>:8765/viewer.html?capture=multi
+```
 
 ## Public Safety
 

@@ -3,11 +3,15 @@ import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const demo = process.env.DEMO || "short";
-const query = demo === "long" ? "demo=long" : "demo=1";
+const query = demo === "long" ? "demo=long" : demo === "multi" ? "demo=multi" : "demo=1";
 const baseUrl = process.env.CHAT_URL || `http://127.0.0.1:8765/?${query}`;
 const outputDir = resolve("captures");
-const captureName = demo === "long" ? "jetson-lfm25-longform-demo" : "jetson-lfm25-chat-demo";
+const captureName =
+  demo === "long" ? "jetson-lfm25-longform-demo" :
+  demo === "multi" ? "jetson-lfm25-multiturn-hot-demo" :
+  "jetson-lfm25-chat-demo";
 await mkdir(outputDir, { recursive: true });
+await fetch("http://127.0.0.1:8765/api/prewarm", { method: "POST" });
 
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({
@@ -19,9 +23,11 @@ await page.goto(baseUrl, { waitUntil: "networkidle" });
 await page.waitForSelector(".bubble.assistant p");
 await page.waitForFunction(() => {
   const status = document.querySelector("#statusText")?.textContent || "";
+  const requestedMulti = new URLSearchParams(location.search).get("demo") === "multi";
   const bubbles = [...document.querySelectorAll(".bubble.assistant p")];
   const latest = bubbles[bubbles.length - 1]?.textContent.trim() || "";
-  return status === "ready" && bubbles.length >= 2 && latest.length > 20;
+  const needed = requestedMulti ? 4 : 2;
+  return status === "ready" && bubbles.length >= needed && latest.length > 20;
 }, null, { timeout: 180000 });
 await page.waitForTimeout(2500);
 await page.screenshot({ path: resolve(outputDir, `${captureName}.png`) });
