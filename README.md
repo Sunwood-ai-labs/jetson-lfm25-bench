@@ -60,6 +60,12 @@ Open:
 http://127.0.0.1:8765
 ```
 
+LAN video viewer:
+
+```text
+http://<mac-lan-ip>:8765/viewer.html
+```
+
 Record a demo video:
 
 ```bash

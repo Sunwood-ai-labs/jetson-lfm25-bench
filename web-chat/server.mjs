@@ -5,7 +5,10 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
 const publicRoot = join(root, "public");
+const repoRoot = join(root, "..");
+const capturesRoot = join(repoRoot, "captures");
 const port = Number(process.env.PORT || 8765);
+const host = process.env.HOST || "0.0.0.0";
 const ollamaBase = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11435";
 const model =
   process.env.OLLAMA_MODEL || "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF:Q4_K_M";
@@ -14,7 +17,9 @@ const mime = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8"
+  ".json": "application/json; charset=utf-8",
+  ".png": "image/png",
+  ".webm": "video/webm"
 };
 
 function sendJson(res, status, body) {
@@ -113,11 +118,14 @@ async function status(res) {
   }
 }
 
-async function serveStatic(req, res) {
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const rawPath = url.pathname === "/" ? "/index.html" : url.pathname;
+async function serveFile(req, res, baseDir, rawPath) {
   const safePath = normalize(rawPath).replace(/^(\.\.[/\\])+/, "");
-  const filePath = join(publicRoot, safePath);
+  const filePath = join(baseDir, safePath);
+  if (!filePath.startsWith(baseDir)) {
+    res.writeHead(403, { "content-type": "text/plain; charset=utf-8" });
+    res.end("forbidden");
+    return;
+  }
   try {
     const data = await readFile(filePath);
     res.writeHead(200, { "content-type": mime[extname(filePath)] || "application/octet-stream" });
@@ -128,11 +136,20 @@ async function serveStatic(req, res) {
   }
 }
 
+async function serveStatic(req, res) {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const rawPath = url.pathname === "/" ? "/index.html" : url.pathname;
+  if (rawPath.startsWith("/captures/")) {
+    return serveFile(req, res, capturesRoot, rawPath.replace("/captures/", "/"));
+  }
+  return serveFile(req, res, publicRoot, rawPath);
+}
+
 createServer(async (req, res) => {
   if (req.method === "GET" && req.url?.startsWith("/api/status")) return status(res);
   if (req.method === "POST" && req.url === "/api/chat") return proxyChat(req, res);
   return serveStatic(req, res);
-}).listen(port, () => {
-  console.log(`Jetson LFM2.5 chat: http://127.0.0.1:${port}`);
+}).listen(port, host, () => {
+  console.log(`Jetson LFM2.5 chat: http://${host}:${port}`);
   console.log(`Ollama upstream: ${ollamaBase}`);
 });

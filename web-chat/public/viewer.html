@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jetson LFM2.5 Capture Viewer</title>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      .viewer-shell {
+        width: min(1120px, 100%);
+        display: grid;
+        gap: 18px;
+      }
+
+      .viewer-card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .viewer-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px 26px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .viewer-head h1 {
+        font-size: clamp(32px, 5vw, 54px);
+      }
+
+      .video-wrap {
+        padding: 20px;
+        background: #101612;
+      }
+
+      video {
+        display: block;
+        width: 100%;
+        max-height: calc(100vh - 230px);
+        background: #000;
+      }
+
+      .viewer-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 16px 20px 20px;
+      }
+
+      .viewer-meta a {
+        color: var(--green);
+        font-weight: 900;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="viewer-shell">
+        <article class="viewer-card">
+          <header class="viewer-head">
+            <div>
+              <p class="kicker">LAN Playback</p>
+              <h1>Jetson LFM2.5 Capture</h1>
+            </div>
+            <div class="status ready">
+              <span class="pulse"></span>
+              <span>ready</span>
+            </div>
+          </header>
+          <div class="video-wrap">
+            <video controls autoplay muted playsinline poster="/captures/jetson-lfm25-chat-demo.png">
+              <source src="/captures/jetson-lfm25-chat-demo.webm" type="video/webm" />
+            </video>
+          </div>
+          <footer class="viewer-meta">
+            <a href="/captures/jetson-lfm25-chat-demo.webm">Open video</a>
+            <a href="/captures/jetson-lfm25-chat-demo.png">Open screenshot</a>
+            <a href="/">Live chat</a>
+          </footer>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

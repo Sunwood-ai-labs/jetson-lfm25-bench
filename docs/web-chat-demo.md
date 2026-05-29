@@ -15,6 +15,7 @@ Browser -> local Node server :8765 -> SSH tunnel :11435 -> jetson-orin Ollama :1
 - Screenshot: `captures/jetson-lfm25-chat-demo.png`
 - Model: `hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF:Q4_K_M`
 - Context: 4096
+- LAN viewer path: `/viewer.html`
 
 The final captured prompt asks the model to summarize the observed Jetson run in
 Japanese. The server system prompt includes the measured memory facts from the
@@ -28,4 +29,3 @@ After recording, stop the resident model on the Jetson:
 ```bash
 ssh jetson-orin 'ollama stop hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF:Q4_K_M || true'
 ```
-
