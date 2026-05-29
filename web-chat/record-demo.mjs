@@ -3,7 +3,7 @@ import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const demo = process.env.DEMO || "short";
-const query = demo === "long" ? "demo=long" : demo === "multi" ? "demo=multi" : "demo=1";
+const query = demo === "long" ? "demo=long" : demo === "multi" ? "demo=multi&recording=1" : "demo=1";
 const baseUrl = process.env.CHAT_URL || `http://127.0.0.1:8765/?${query}`;
 const outputDir = resolve("captures");
 const captureName =
@@ -15,8 +15,8 @@ await fetch("http://127.0.0.1:8765/api/prewarm", { method: "POST" });
 
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({
-  viewport: { width: 1280, height: 800 },
-  recordVideo: { dir: outputDir, size: { width: 1280, height: 800 } }
+  viewport: { width: 1280, height: 960 },
+  recordVideo: { dir: outputDir, size: { width: 1280, height: 960 } }
 });
 const page = await context.newPage();
 await page.goto(baseUrl, { waitUntil: "networkidle" });

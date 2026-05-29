@@ -49,6 +49,102 @@ body {
   overflow: hidden;
 }
 
+body.recording .shell {
+  min-height: 100vh;
+  padding: 14px;
+  align-items: start;
+}
+
+body.recording .console {
+  height: calc(100vh - 28px);
+  width: min(1180px, 100%);
+}
+
+body.recording .topbar {
+  padding: 14px 20px 10px;
+}
+
+body.recording h1 {
+  font-size: 42px;
+}
+
+body.recording .meter {
+  min-height: 54px;
+  padding: 10px 16px;
+}
+
+body.recording .transcript {
+  gap: 10px;
+  padding: 14px 20px;
+}
+
+body.recording .bubble {
+  width: min(900px, 100%);
+  padding: 12px 14px;
+}
+
+body.recording .bubble.user {
+  max-height: none;
+}
+
+body.recording .bubble.compact-history {
+  max-height: 82px;
+  overflow: hidden;
+  opacity: 0.72;
+}
+
+body.recording .bubble.compact-history .think-box {
+  display: none;
+}
+
+body.recording .bubble.compact-history p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.recording .bubble.user {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+}
+
+body.recording .bubble.user .label {
+  margin: 0;
+}
+
+body.recording .bubble.user p {
+  white-space: normal;
+}
+
+body.recording .bubble.user.compact-history p {
+  white-space: nowrap;
+}
+
+body.recording .bubble p {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+body.recording .think-box pre {
+  max-height: none;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+body.recording .composer {
+  grid-template-columns: 1fr 92px;
+  padding: 12px 16px;
+}
+
+body.recording textarea {
+  min-height: 54px;
+  max-height: 90px;
+  font-size: 14px;
+}
+
 .topbar {
   display: flex;
   align-items: center;

@@ -23,6 +23,7 @@ function addBubble(role, text = "") {
   article.append(label, p);
   transcript.append(article);
   transcript.scrollTop = transcript.scrollHeight;
+  p.bubbleElement = article;
   return p;
 }
 
@@ -60,8 +61,18 @@ async function refreshStatus() {
 }
 
 async function sendPrompt(prompt) {
-  addBubble("user", prompt);
+  if (document.body.classList.contains("recording")) {
+    for (const bubble of transcript.querySelectorAll(".bubble")) {
+      bubble.classList.add("compact-history");
+      const details = bubble.querySelector("details");
+      if (details) details.open = false;
+    }
+  }
+  const userBubble = addBubble("user", prompt);
   const { answer, think, thinkText } = addAssistantBubble();
+  if (document.body.classList.contains("recording")) {
+    userBubble.bubbleElement.scrollIntoView({ block: "start" });
+  }
   setStatus("", "generating");
   runtimeState.textContent = "Streaming";
   sendButton.disabled = true;
@@ -107,7 +118,11 @@ async function sendPrompt(prompt) {
           }
         }
         answer.textContent += token;
-        transcript.scrollTop = transcript.scrollHeight;
+        if (document.body.classList.contains("recording")) {
+          userBubble.bubbleElement.scrollIntoView({ block: "start" });
+        } else {
+          transcript.scrollTop = transcript.scrollHeight;
+        }
       }
       if (payload.elapsedMs) {
         runtimeState.textContent = `${Math.round(payload.elapsedMs / 1000)}s`;
@@ -125,6 +140,9 @@ async function sendPrompt(prompt) {
   sendButton.disabled = false;
   promptInput.focus();
   await refreshStatus();
+  if (document.body.classList.contains("recording")) {
+    userBubble.bubbleElement.scrollIntoView({ block: "start" });
+  }
 }
 
 form.addEventListener("submit", async (event) => {
@@ -144,6 +162,9 @@ form.addEventListener("submit", async (event) => {
 await refreshStatus();
 
 const params = new URLSearchParams(location.search);
+if (params.get("recording") === "1") {
+  document.body.classList.add("recording");
+}
 if (params.get("demo") === "1") {
   promptInput.value = "このJetson上でLFM2.5 Q4_K_Mを動かした実測結果を、短い日本語で説明して。";
   setTimeout(() => form.requestSubmit(), 700);
@@ -162,9 +183,9 @@ if (params.get("demo") === "long") {
 
 if (params.get("demo") === "multi") {
   const prompts = [
-    "まず、ホットスタートだと最初の表示が速くなる理由を短く説明して。",
-    "次に、thinkを表示するデモとして、何が見えるようになったか説明して。",
-    "最後に、このJetson LFM2.5 Q4_K_M連続チャット実験の見どころを3点でまとめて。"
+    "ホットスタートだと最初の表示が速くなる理由を2文で説明して。",
+    "think表示デモとして、何が見えるようになったか2文で説明して。",
+    "Jetson LFM2.5 Q4_K_M連続チャット実験の見どころを3点で短くまとめて。"
   ];
   let index = 0;
   const runNext = async () => {
