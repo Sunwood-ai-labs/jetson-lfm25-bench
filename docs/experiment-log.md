@@ -31,3 +31,16 @@ Run result:
 - After `ollama stop`, available RAM returned to about 5.9 GiB.
 - Practical conclusion: Q4_K_M is usable on this 8 GB Jetson, but normal work
   should keep context small and avoid loading another model alongside it.
+
+Longform follow-up:
+
+- `scripts/run_longform_ollama_api.sh jetson-orin` completed a longer API run.
+- Prompt prefill: 415 tokens.
+- Generated output: 2618 tokens.
+- Wall time: 100 seconds.
+- Ollama timing: total duration about 99.7 seconds, load duration about 7.3
+  seconds, eval duration about 89.1 seconds.
+- Post-run memory was still tight: about 403 MiB available, Ollama RSS about
+  5.8 GiB, context 4096.
+- The model emitted hidden reasoning text despite instructions, so the public
+  log keeps only metrics and a sanitized interpretation.

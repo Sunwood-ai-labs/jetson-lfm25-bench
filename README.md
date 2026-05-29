@@ -72,6 +72,12 @@ Record a demo video:
 npm run record
 ```
 
+Run a longer text experiment:
+
+```bash
+./scripts/run_longform_ollama_api.sh jetson-orin
+```
+
 The current captured proof is:
 
 - `captures/jetson-lfm25-chat-demo.webm`

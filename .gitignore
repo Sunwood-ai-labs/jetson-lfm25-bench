@@ -11,3 +11,4 @@ tmp/
 work/
 *.log
 logs/raw/
+logs/*-response.json
