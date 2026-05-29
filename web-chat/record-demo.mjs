@@ -2,8 +2,11 @@ import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const baseUrl = process.env.CHAT_URL || "http://127.0.0.1:8765/?demo=1";
+const demo = process.env.DEMO || "short";
+const query = demo === "long" ? "demo=long" : "demo=1";
+const baseUrl = process.env.CHAT_URL || `http://127.0.0.1:8765/?${query}`;
 const outputDir = resolve("captures");
+const captureName = demo === "long" ? "jetson-lfm25-longform-demo" : "jetson-lfm25-chat-demo";
 await mkdir(outputDir, { recursive: true });
 
 const browser = await chromium.launch({ headless: true });
@@ -21,9 +24,9 @@ await page.waitForFunction(() => {
   return status === "ready" && bubbles.length >= 2 && latest.length > 20;
 }, null, { timeout: 180000 });
 await page.waitForTimeout(2500);
-await page.screenshot({ path: resolve(outputDir, "jetson-lfm25-chat-demo.png") });
+await page.screenshot({ path: resolve(outputDir, `${captureName}.png`) });
 const video = page.video();
 await context.close();
 await browser.close();
 const videoPath = video ? await video.path() : "";
-console.log(JSON.stringify({ screenshot: resolve(outputDir, "jetson-lfm25-chat-demo.png"), video: videoPath }));
+console.log(JSON.stringify({ screenshot: resolve(outputDir, `${captureName}.png`), video: videoPath }));

@@ -162,9 +162,11 @@ h1 {
 
 .bubble.user {
   align-self: flex-end;
+  max-height: 176px;
   background: #162018;
   color: #f8fbf5;
   border-color: #162018;
+  overflow: auto;
 }
 
 .bubble.assistant {

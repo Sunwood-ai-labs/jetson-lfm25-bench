@@ -82,6 +82,8 @@ The current captured proof is:
 
 - `captures/jetson-lfm25-chat-demo.webm`
 - `captures/jetson-lfm25-chat-demo.png`
+- `captures/jetson-lfm25-longform-demo.webm`
+- `captures/jetson-lfm25-longform-demo.png`
 
 ## Public Safety
 

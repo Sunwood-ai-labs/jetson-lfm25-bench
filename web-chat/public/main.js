@@ -112,8 +112,19 @@ form.addEventListener("submit", async (event) => {
 
 await refreshStatus();
 
-if (new URLSearchParams(location.search).get("demo") === "1") {
-  promptInput.value =
-    "このJetson上でLFM2.5 Q4_K_Mを動かした実測結果を、短い日本語で説明して。";
+const params = new URLSearchParams(location.search);
+if (params.get("demo") === "1") {
+  promptInput.value = "このJetson上でLFM2.5 Q4_K_Mを動かした実測結果を、短い日本語で説明して。";
+  setTimeout(() => form.requestSubmit(), 700);
+}
+
+if (params.get("demo") === "long") {
+  promptInput.value = [
+    "このJetson上でLFM2.5 Q4_K_Mの長文生成を試した結果を、日本語で詳しめに説明して。",
+    "必ず次の観測値だけを使ってください。",
+    "入力側prompt_eval_countは415、生成側eval_countは2618、壁時計時間は100秒、total_durationは約99.7秒、load_durationは約7.3秒、eval_durationは約89.1秒。",
+    "実行直後のavailable memoryは403MiB、Ollama RSSは約5.8GiB、contextは4096。",
+    "最後に、このLAN動画ビューワーで見る価値を一文でまとめてください。"
+  ].join("\\n");
   setTimeout(() => form.requestSubmit(), 700);
 }
