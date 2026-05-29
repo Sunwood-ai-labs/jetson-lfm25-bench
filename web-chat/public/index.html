@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jetson LFM2.5 Live Chat</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="console" aria-label="Jetson LFM2.5 chat console">
+        <header class="topbar">
+          <div>
+            <p class="kicker">Jetson Orin Nano Super</p>
+            <h1>LFM2.5 Q4 Live</h1>
+          </div>
+          <div class="status" id="status">
+            <span class="pulse"></span>
+            <span id="statusText">connecting</span>
+          </div>
+        </header>
+
+        <section class="meter-row" aria-label="runtime metrics">
+          <div class="meter">
+            <span>model</span>
+            <strong id="modelName">LFM2.5-8B-A1B</strong>
+          </div>
+          <div class="meter">
+            <span>runtime</span>
+            <strong id="runtimeState">Ollama</strong>
+          </div>
+          <div class="meter">
+            <span>context</span>
+            <strong>4096</strong>
+          </div>
+        </section>
+
+        <section class="transcript" id="transcript" aria-live="polite">
+          <article class="bubble assistant">
+            <span class="label">remote model</span>
+            <p>Jetson上のOllamaに接続しています。質問を送ると、LFM2.5 Q4_K_M がストリーミングで返答します。</p>
+          </article>
+        </section>
+
+        <form class="composer" id="chatForm">
+          <textarea
+            id="prompt"
+            rows="3"
+            spellcheck="false"
+            placeholder="Jetsonで小型LLMを動かす時のメモリ注意点を短く説明して"
+          ></textarea>
+          <button id="sendButton" type="submit" aria-label="Send prompt">
+            <span>Send</span>
+          </button>
+        </form>
+      </section>
+    </main>
+    <script src="/main.js" type="module"></script>
+  </body>
+</html>
