@@ -8,6 +8,7 @@
     "record": "node web-chat/record-demo.mjs"
   },
   "devDependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "playwright": "^1.56.1"
   }
 }

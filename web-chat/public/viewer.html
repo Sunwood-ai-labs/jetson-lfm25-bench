@@ -71,13 +71,14 @@
           </header>
           <div class="video-wrap">
             <video id="video" controls autoplay muted playsinline poster="/captures/jetson-lfm25-chat-demo.png">
-              <source id="source" src="/captures/jetson-lfm25-chat-demo.webm" type="video/webm" />
+              <source id="source" src="/captures/jetson-lfm25-chat-demo.mp4" type="video/mp4" />
             </video>
           </div>
           <footer class="viewer-meta">
             <a href="/viewer.html">Short chat</a>
             <a href="/viewer.html?capture=long">Longform run</a>
-            <a id="videoLink" href="/captures/jetson-lfm25-chat-demo.webm">Open video</a>
+            <a id="videoLink" href="/captures/jetson-lfm25-chat-demo.mp4">Open MP4</a>
+            <a id="webmLink" href="/captures/jetson-lfm25-chat-demo.webm">Open WebM</a>
             <a id="shotLink" href="/captures/jetson-lfm25-chat-demo.png">Open screenshot</a>
             <a href="/">Live chat</a>
           </footer>
@@ -89,9 +90,11 @@
       if (params.get("capture") === "long") {
         const video = document.querySelector("#video");
         const source = document.querySelector("#source");
-        source.src = "/captures/jetson-lfm25-longform-demo.webm";
+        source.src = "/captures/jetson-lfm25-longform-demo.mp4";
+        source.type = "video/mp4";
         video.poster = "/captures/jetson-lfm25-longform-demo.png";
         document.querySelector("#videoLink").href = source.src;
+        document.querySelector("#webmLink").href = "/captures/jetson-lfm25-longform-demo.webm";
         document.querySelector("#shotLink").href = video.poster;
         video.load();
       }

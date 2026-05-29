@@ -12,8 +12,10 @@ Browser -> local Node server :8765 -> SSH tunnel :11435 -> jetson-orin Ollama :1
 ## Captured Run
 
 - Video: `captures/jetson-lfm25-chat-demo.webm`
+- MP4 video: `captures/jetson-lfm25-chat-demo.mp4`
 - Screenshot: `captures/jetson-lfm25-chat-demo.png`
 - Longform video: `captures/jetson-lfm25-longform-demo.webm`
+- Longform MP4 video: `captures/jetson-lfm25-longform-demo.mp4`
 - Longform screenshot: `captures/jetson-lfm25-longform-demo.png`
 - Model: `hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF:Q4_K_M`
 - Context: 4096
